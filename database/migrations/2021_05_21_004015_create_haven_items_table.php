@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateUserTable extends Migration
+class CreateHavenItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,12 @@ class UpdateUserTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->string('hearth_secret')->nullable();
-            $table->string('role')->default('user');
+        Schema::create('haven_items', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('name');
+            $table->boolean('has_quality');
+            $table->string('filename')->nullable();
         });
     }
 
@@ -26,8 +29,6 @@ class UpdateUserTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function(Blueprint $table) {
-            $table->dropColumn('hearth_secret');
-        });
+        Schema::dropIfExists('haven_items');
     }
 }

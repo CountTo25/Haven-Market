@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 
 /**
- * @property ?string hearth_secret player's HS
+ * @property ?string $hearth_secret player's HS
  */
 
 class User extends Authenticatable
