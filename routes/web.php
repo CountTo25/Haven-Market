@@ -16,4 +16,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/', [\App\Http\Controllers\FrontendController::class, 'home']);
+Route::view('/', 'svelte');
