@@ -1,4 +1,7 @@
 <script>
+import RouterLink from "../Components/RouterLink.svelte";
+import Shop from "./Shop.svelte";
+
     let data = [];
     let booting = true;
     window.api.home(function(response) {data = response; booting = false;});
@@ -7,11 +10,13 @@
 
 
 <div class='body'>
-    KEKEKE
     <div class='row'>
     {#each data as shop}
         <div class='col-lg-4 col-sm-12'>
-            {shop.name}
+            <RouterLink href={'/shop/'+shop.name+'/'}>
+                <div>{shop.name}</div>
+                <div>{shop.description}</div>
+            </RouterLink>
         </div>
     {/each}
     </div>

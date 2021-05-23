@@ -5,17 +5,32 @@ html, body {
 }
 
 body {
-	color: #333;
+	color: #F5F9E9;
 	margin: 0;
 	padding: 8px;
 	box-sizing: border-box;
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	background-color: #40523a;
 }
 
 a {
 	color: rgb(0,100,200);
 	text-decoration: none;
 }
+
+* {
+	box-sizing: border-box;
+}
+
+.row.ng {
+	margin: 0 !important;
+	width: 100% !important;
+}
+
+.ib {
+	display: inline-block;
+}
+
 
 a:hover {
 	text-decoration: underline;
@@ -38,6 +53,14 @@ input, button, select, textarea {
 	box-sizing: border-box;
 	border: 1px solid #ccc;
 	border-radius: 2px;
+}
+
+.panel-body {
+	background-color: #363457;
+}
+
+.panel-item {
+	background-color: #00000042;
 }
 
 input:disabled {

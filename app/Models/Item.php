@@ -22,7 +22,8 @@ class Item extends Model
 
     protected $table = 'items';
     protected $casts = [
-        'on_sale' => 'boolean'
+        'on_sale' => 'boolean',
+        'selling' => 'boolean'
     ];
 
     public function haven(): BelongsTo

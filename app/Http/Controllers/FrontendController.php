@@ -16,6 +16,6 @@ class FrontendController extends Controller
 
     public function shopPage(string $shop, Request $request): array
     {
-        return Shop::where('name', $shop)->with('items')->first()->toArray();
+        return Shop::where('name', $shop)->with('items.haven')->first()->toArray();
     }
 }
