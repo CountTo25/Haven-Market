@@ -1,4 +1,5 @@
 <script>
+    import BGImg from '../Components/BGImg.svelte';
     export let keywords;
     let data = [];
     let booting = true;
@@ -7,6 +8,18 @@
         selling: [],
         buying: [],
     };
+
+    let tradeOfferText = 'Trade offer';
+    let tradeOfferClickCount = 0;
+
+    function tradeOfferMeme() {
+        if (tradeOfferClickCount > 5) {
+            tradeOfferText = '⚠️TRADE OFFER⚠️';
+            return;
+        }
+        tradeOfferClickCount++;
+    }
+
     window.api.shop(function(response) {
         data = response;
         booting = false;
@@ -22,6 +35,13 @@
         });
     }, shopname);
 
+    let hasAnythingInCart = shopname in (window.cart.buying) || shopname in (window.cart.selling);
+
+    function addToCart(item) {
+        window.cart.add.buy(shopname, item);
+        hasAnythingInCart = shopname in (window.cart.buying) || shopname in (window.cart.selling);
+    }
+
 </script>
 <div>
 
@@ -35,18 +55,35 @@
         </div>
     </div>
     <div class='row'>
-        <div class='col-xl-6 col-12 panel'>
+        <div class='panel'>
             <div class='panel-contents panel-body'>
-            <div class='title'>Offering</div>
+                <div class='title to-title' on:click={tradeOfferMeme}>{tradeOfferText}</div>
+                <div>
+                    {#if hasAnythingInCart}
+                        <div></div>
+                    {:else}
+                        <div class='to-null'>Nothing in the cart yet :(</div>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-xl-6 col-12 panel'>
+            <div class='panel-contents panel-body panel-limited'>
+            <div class='title'>Selling</div>
             {#each items.selling as item}
                 <div class='col-xl-6 col-md-12 itemnode ib'>
-                        <div class='row ng itemwrap panel-item'>
-                            <div class='col-6'>
-                                <div>{item.haven.name} q{item.quality}</div>
-                                <div>{item.price}</div>
+                        <div class='row ng itemwrap panel-item' on:click={function() {addToCart(item)}}>
+                            <div class='col-2'>
+                                <BGImg src={window.appurl('storage/icons/'+item.haven.filename)}/>
                             </div>
                             <div class='col-6'>
-                                <div>In stock: {item.amount}</div>
+                                <div>{item.haven.name} {item.haven.has_quality ? 'q'+item.quality : ''}</div>
+                                <div>{item.price} {item.price === 1 ? 'coin' : 'coins'}</div>
+                            </div>
+                            <div class='col-4'>
+                                <div>Up to {item.amount} pieces</div>
                             </div>
                         </div>
                 </div>
@@ -54,16 +91,19 @@
             </div>
         </div>
         <div class='col-xl-6 col-12 panel'>
-            <div class='panel-contents panel-body'>
+            <div class='panel-contents panel-body panel-limited'>
             <div class='title'>Buying</div>
             {#each items.buying as item}
             <div class='col-xl-6 col-md-12 itemnode ib'>
                     <div class='row ng itemwrap panel-item'>
-                        <div class='col-6'>
-                            <div>{item.haven.name} q{item.quality}</div>
-                            <div>{item.price}</div>
+                        <div class='col-2'>
+                            <BGImg src={window.appurl('storage/icons/'+item.haven.filename)}/>
                         </div>
                         <div class='col-6'>
+                            <div>{item.haven.name} {item.haven.has_quality ? 'q'+item.quality : ''}</div>
+                            <div>{item.price} {item.price === 1 ? 'coin' : 'coins'}</div>
+                        </div>
+                        <div class='col-4'>
                             <div>Up to {item.amount} pieces</div>
                         </div>
                     </div>
@@ -91,18 +131,8 @@
 
     .itemnode {
         padding: 5px;
-
     }
 
-    .panel {
-        padding: 5px;
-    }
-
-    .panel-contents {
-        border-radius: 5px;
-        padding: 10px;
-        height: 100%;
-    }
 
     .nodewrap {
         padding: 5px;
@@ -111,9 +141,26 @@
     .itemwrap {
         padding: 10px;
         border-radius: 5px;
+        user-select: none;
     }
 
-    .itemwrap .col-6 {
-        padding: 0px;
+    .panel-item {
+        cursor: pointer;
+    }
+
+    .panel-limited {
+        
+        max-height: 50vh;
+        height: 50vh;
+        overflow-y: scroll;
+    }
+
+    .to-null {
+        color: gray;
+        text-align: center;
+    }
+
+    .to-title {
+        user-select: none;
     }
 </style>

@@ -13,11 +13,19 @@ import Shop from "./Shop.svelte";
     <div class='row'>
     {#each data as shop}
         <div class='col-lg-4 col-sm-12'>
-            <RouterLink href={'/shop/'+shop.name+'/'}>
-                <div>{shop.name}</div>
-                <div>{shop.description}</div>
+            <RouterLink href={'/shop/'+shop.name+'/'} style='height: 100%; margin-bottom: 10px;'>
+                <div class='panel-body panel panel-contents h-100'>
+                    <div class='heading-mini'>{shop.name}</div>
+                    <div>{shop.description ?? ''}</div>
+                </div>
             </RouterLink>
         </div>
     {/each}
     </div>
 </div>
+
+<style>
+    .heading-mini {
+        font-size: 20px;
+    }
+</style>
