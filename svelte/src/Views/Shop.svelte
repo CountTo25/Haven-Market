@@ -1,5 +1,6 @@
 <script>
     import BGImg from '../Components/BGImg.svelte';
+import ShopItem from '../Components/ShopItem.svelte';
     export let keywords;
     let data = [];
     let booting = true;
@@ -40,7 +41,10 @@
     function addToCart(item) {
         window.cart.add.buy(shopname, item);
         hasAnythingInCart = shopname in (window.cart.buying) || shopname in (window.cart.selling);
+        buying = window.cart.buying[shopname];
     }
+
+    $: buying = {}
 
 </script>
 <div>
@@ -60,7 +64,22 @@
                 <div class='title to-title' on:click={tradeOfferMeme}>{tradeOfferText}</div>
                 <div>
                     {#if hasAnythingInCart}
-                        <div></div>
+                        <div class='row row-sp'>
+                            <div class='col-6'>
+                                {#if shopname in window.cart.selling}
+                                    {#each  Object.entries(window.cart.selling[shopname]) as [key, value]}
+                                        {key} {value}
+                                    {/each}
+                                {/if}
+                            </div>
+                            <div class='col-6'>
+                                {#if shopname in window.cart.buying}
+                                    {#each Object.entries(buying) as [key, value]}
+                                        {key} {value}
+                                    {/each}
+                                {/if}
+                            </div>
+                        </div>
                     {:else}
                         <div class='to-null'>Nothing in the cart yet :(</div>
                     {/if}
@@ -71,45 +90,19 @@
     <div class='row'>
         <div class='col-xl-6 col-12 panel'>
             <div class='panel-contents panel-body panel-limited'>
-            <div class='title'>Selling</div>
-            {#each items.selling as item}
-                <div class='col-xl-6 col-md-12 itemnode ib'>
-                        <div class='row ng itemwrap panel-item' on:click={function() {addToCart(item)}}>
-                            <div class='col-2'>
-                                <BGImg src={window.appurl('storage/icons/'+item.haven.filename)}/>
-                            </div>
-                            <div class='col-6'>
-                                <div>{item.haven.name} {item.haven.has_quality ? 'q'+item.quality : ''}</div>
-                                <div>{item.price} {item.price === 1 ? 'coin' : 'coins'}</div>
-                            </div>
-                            <div class='col-4'>
-                                <div>Up to {item.amount} pieces</div>
-                            </div>
-                        </div>
-                </div>
-            {/each}
+                <div class='title'>Buying</div>
+                {#each items.buying as item}
+                <ShopItem {item} src={window.appurl('storage/icons/'+item.haven.filename)} />
+                {/each}
             </div>
         </div>
         <div class='col-xl-6 col-12 panel'>
             <div class='panel-contents panel-body panel-limited'>
-            <div class='title'>Buying</div>
-            {#each items.buying as item}
-            <div class='col-xl-6 col-md-12 itemnode ib'>
-                    <div class='row ng itemwrap panel-item'>
-                        <div class='col-2'>
-                            <BGImg src={window.appurl('storage/icons/'+item.haven.filename)}/>
-                        </div>
-                        <div class='col-6'>
-                            <div>{item.haven.name} {item.haven.has_quality ? 'q'+item.quality : ''}</div>
-                            <div>{item.price} {item.price === 1 ? 'coin' : 'coins'}</div>
-                        </div>
-                        <div class='col-4'>
-                            <div>Up to {item.amount} pieces</div>
-                        </div>
-                    </div>
+            <div class='title'>Selling</div>
+            {#each items.selling as item}
+                <ShopItem {item} src={window.appurl('storage/icons/'+item.haven.filename)} on:click={function() {addToCart(item)}}/>
+            {/each}
             </div>
-        {/each}
-        </div>
         </div>
     </div>
     {/if}

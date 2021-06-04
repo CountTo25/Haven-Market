@@ -2,6 +2,8 @@
 import RouterLink from './Components/RouterLink.svelte';
 import Router from './Support/Router.svelte';
 import Header from './Components/Header.svelte';
+import "smelte/src/tailwind.css";
+
 	let name = 'world';
 
 	let baseurl = 'http://localhost:3000';
