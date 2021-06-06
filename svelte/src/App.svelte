@@ -19,20 +19,22 @@ import "smelte/src/tailwind.css";
 
 	window.cart = {
 		add: {
-			buy: function(shop, item) {
+			buy: function(shop, item, amount = 1) {
 				if (!(shop in window.cart.buying)) {
 					window.cart.buying[shop]={}
 				}
 
 				if (!(item.id in window.cart.buying[shop])) 
 				{
-					console.log('???');
 					window.cart.buying[shop][item.id] = 0;
 				}
 
-				window.cart.buying[shop][item.id] += 1;
+				window.cart.buying[shop][item.id] += amount;
+				if (window.cart.buying[shop][item.id] < 0) {
+					window.cart.buying[shop][item.id] = 0;
+				}
 			},
-			sell: function(shop, item) {
+			sell: function(shop, item, amount = 1) {
 				//i could refer by (shop, item, action), but it feels better to have 2 separate methods: buy/sell
 				if (!(shop in window.cart.selling)) {
 					window.cart.selling[shop]={}
@@ -42,10 +44,22 @@ import "smelte/src/tailwind.css";
 				{
 					window.cart.selling[shop][item.id] = 0;
 				}
-
-				window.cart.selling[shop][item.id] += 1;
+				
+				window.cart.selling[shop][item.id] += amount;
+				if (window.cart.selling[shop][item.id] < 0) {
+					window.cart.selling[shop][item.id] = 0;
+				}
 			},
-		}, 
+		},
+		amountOf: function(item, shop, method) {
+			if (!(shop in this[method])) {
+				return 0;
+			}
+			if (!(item in this[method][shop])) {
+				return 0;
+			}
+			return this[method][shop][item];
+		},
 		buying: {},
 		selling: {},
 	}

@@ -10,7 +10,21 @@
 
 		</div>
 		<div class='col-4'>
-			<input placeholder='find something'>
+			<input class='big' placeholder='Find something 🔎'>
 		</div>
 	</div>
 </div>
+
+<style>
+	.col-4 {
+		text-align: center;
+		line-height: 40px;
+	}
+
+	.header {
+		height: 50px;
+		padding: 5px;
+	}
+
+
+</style>

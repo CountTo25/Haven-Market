@@ -5,9 +5,14 @@ import Home from "../Views/Home.svelte";
 import NotFound from "../Views/NotFound.svelte";
 import Shop from "../Views/Shop.svelte";
 
+let basetitle = document.title;
+
 let routes = {
     '/': Home,
-    '/shop/{name}/': Shop,
+    '/shop/{name}/': {
+        view: Shop,
+        title: function(keywords) {return keywords[0] + '@'+basetitle}
+    },
     '/404/': NotFound,
 };
 
@@ -25,11 +30,26 @@ let view = null;
 getView(urn);
 
 function getView(urn) {
-    console.log('im called '+urn);
     //capture variables
     let captured = captureRoute(urn);
     keywords = captured.arguments;
-    view = routes[captured.route];
+    if (!('view' in routes[captured.route])) {
+        view = routes[captured.route];
+        document.title = basetitle;
+        return; //use simple schema
+    }
+    view = routes[captured.route].view;
+    if ('title' in routes[captured.route]) {
+        if (typeof routes[captured.route].title === 'function') {
+            console.log('yup');
+            console.log(routes[captured.route].title(keywords));
+            document.title = routes[captured.route].title(keywords);
+        } else {
+            document.title = routes[captured.route].title;
+        }
+    } else {
+        document.title = basetitle;
+    }
 }
 
 function onBrowserHistory() {
