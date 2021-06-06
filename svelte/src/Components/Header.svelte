@@ -4,10 +4,10 @@
 <div class='header'>
 	<div class='row'>
 		<div class='col-4'>
-			<RouterLink label='Haven Marketplace' href='/'/>
+			<RouterLink href='/'>Haven Market</RouterLink>
 		</div>
 		<div class='col-4'>
-
+			<span class='text-gr'>You're not logged in</span>
 		</div>
 		<div class='col-4'>
 			<input class='big' placeholder='Find something 🔎'>

@@ -40,7 +40,7 @@ import "smelte/src/tailwind.css";
 					window.cart.selling[shop]={}
 				}
 
-				if (!(item.id in window.cart.buying[shop])) 
+				if (!(item.id in window.cart.selling[shop])) 
 				{
 					window.cart.selling[shop][item.id] = 0;
 				}

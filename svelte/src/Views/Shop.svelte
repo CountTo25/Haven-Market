@@ -48,6 +48,7 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
         window.cart.add.sell(shopname, item, amount);
         hasAnythingInCart = shopname in (window.cart.buying) || shopname in (window.cart.selling);
         selling = window.cart.selling[shopname]; 
+        shaker();
 
     }
 
@@ -70,10 +71,12 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
         totalCoins = getTotalCoins();
         if (shopname in window.cart.buying) {
             buying = window.cart.buying[shopname];
+            isBuying = true;
         }
 
         if (shopname in window.cart.selling) {
             selling = window.cart.selling[shopname];
+            isSelling = true;
         }
     }
 
@@ -102,6 +105,9 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
     $: buying = {}
     $: selling = {}
 
+    let isSelling = false;
+    let isBuying = false;
+
     $: getOfferAmount = function (id, action) {
         
         let const_buying = 'buying';
@@ -128,44 +134,57 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
             </div>
         </div>
     </div>
-    <div class='row'>
-        <div class='panel'>
-            <div class='panel-contents panel-body'>
+    <div class='row trade-offer'>
+        <div class='panel fixed-200'>
+            <div class='panel-contents panel-body suppress-padding'>
                 <div class='title to-title' on:click={tradeOfferMeme}>{tradeOfferText}</div>
-                <div>
+                <div class='wrap-to'>
                     {#if hasAnythingInCart}
-                        <div class='row row-sp'>
+                        <div class='row text-center to-status-text' >
+                            <div class='col-4 text-center'>
+                                {#if (totalCoins.sold > 0)}
+                                    You offered goods equal to {totalCoins.sold} {totalCoins.sold === 1 ? 'coin':'coins'}
+                                {/if}
+                            </div>
+                            <div class='col-4'>
+                                {#if (totalCoins.sold < totalCoins.purchased)}
+                                    You need to offer items worth total of {totalCoins.purchased}
+                                {:else if  (totalCoins.purchased !== 0 && totalCoins.sold !== 0)}
+                                    All good!
+                                {/if}
+                            </div>
+                            <div class='col-4'>
+                                {#if (totalCoins.purchased > 0)}
+                                    You selected goods worth {totalCoins.purchased} {totalCoins.purchased === 1 ? 'coin':'coins'}
+                                {/if}
+                            </div>
+                        </div>
+                        <div class='row row-sp to-row'>
                             <div class='col-6'>
-                                {#if shopname in window.cart.selling}
-                                    {#if (totalCoins.sold > 0)}
-                                        <div class='text-center text-gr us-null'>
-                                           You offered goods equal to {totalCoins.sold} {totalCoins.sold === 1 ? 'coin':'coins'}
-                                        </div>
-                                    {/if}
-                                    {#each  Object.entries(window.cart.selling[shopname]) as [key, value]}
+                                <div class='to-scroller'>
+                                {#if isSelling}
+                                    {#each  Object.entries(selling) as [key, value]}
                                         {#if (value > 0)}
-                                            <ShopItemMini item={shopData.selling[key]} amount={value}/>
+                                            <ShopItemMini item={shopData.buying[key]} amount={value}/>
                                         {/if}
                                     {/each}
                                 {/if}
+                                </div>
                             </div>
                             <div class='col-6'>
-                                {#if shopname in window.cart.buying}
-                                    {#if (totalCoins.purchased > 0)}
-                                        <div class='text-center text-gr us-null'>
-                                            You need to offer goods equal to {totalCoins.purchased} {totalCoins.purchased === 1 ? 'coin':'coins'}
-                                        </div>
-                                    {/if}
+                                <div class='to-scroller'>
+                                {#if isBuying}
                                     {#each Object.entries(buying) as [key, value]}
                                         {#if (value > 0)}
                                             <ShopItemMini item={shopData.selling[key]} amount={value}/>
                                         {/if}
                                     {/each}
                                 {/if}
+                                </div>
                             </div>
                         </div>
                     {:else}
-                        <div class='to-null'>Nothing in the cart yet :(</div>
+                        <div class='to-null to-status-text'>Nothing in the cart yet :(</div>
                     {/if}
                 </div>
             </div>
@@ -180,6 +199,9 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
                     {item}
                     src={window.appurl('storage/icons/'+shopData.buying[key].haven.filename)}
                     inOffer={getOfferAmount(shopData.buying[key].id, 'selling')}
+                    on:add={()=>{putOnSale(item)}}
+                    on:remove={()=>{putOnSale(item, -1)}}
+                    on:input ={(e)=>{set(item, e.detail.amount, 'selling')}}
                 />
                 {/each}
             </div>
@@ -217,6 +239,36 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
         font-size: 24px;
     }
 
+    .trade-offer {
+        height: 200px;
+    }
+
+    .to-scroller {
+        overflow-y: scroll;
+        height: 106px;
+        padding-left: 13px;
+        padding-right: 11px;
+    }
+
+    .wrap-to {
+        height: calc(100% - 64px);
+    }
+
+    .to-row.row {
+        height: 100%;
+    }
+
+    .to-row .col-6 {
+        padding: 0px;
+    }
+
+    .to-row .col-6:first-of-type {
+        padding-right: 12px;
+    }
+
+    .to-row .col-6:last-of-type {
+        padding-left: 12px;
+    }
 
 
     .panel-limited {
@@ -233,5 +285,27 @@ import ShopItemMini from '../Components/ShopItemMini.svelte';
 
     .to-title {
         user-select: none;
+        height: 32px;
+        line-height: 32px;
+    }
+
+    .to-status-text {
+        font-size: 16px;
+        line-height: 32px;
+        height: 32px;
+    }
+
+    .fixed-200 {
+        height: 200px;
+    }
+
+    .row {
+        width: 100%;
+        margin: 0px;
+    }
+
+    .suppress-padding {
+        padding-left: 0px;
+        padding-right: 0px;
     }
 </style>

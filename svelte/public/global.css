@@ -120,6 +120,14 @@ button:focus {
 	border-radius: 5px;
 }
 
+.mt-10vh {
+	margin-top: 10vh;
+}
+
+.mt-50px {
+	margin-top: 50px;
+}
+
 .text-gr {
 	color: gray;
 }
